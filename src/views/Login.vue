@@ -1,9 +1,10 @@
 <template>
   <div class="card" style="min-height: 100vh">
     <a-card>
-      <h1 class="title-login">
-        Panora Admin
-      </h1>
+      <div style="display:block;text-align:center;margin-bottom:25px;">
+        <img width="140px" src="@/assets/LogoTextBlack.png" alt="" />
+      </div>
+
       <a-form-model
         layout="vertical"
         :model="formInline"
@@ -48,7 +49,7 @@ export default {
     handleSubmit() {
       console.log("haha");
       this.$store.commit("setAuthentication", true);
-      this.$router.replace({ name: "Dashboard" });
+      this.$router.replace({ name: "Home" });
     }
   }
 };

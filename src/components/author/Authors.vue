@@ -5,68 +5,163 @@
         style="float:right"
         type="primary"
         htmlType="submit"
-        @click="onSubmit"
+        @click="showModal"
+        icon="user-add"
+        shape="circle"
       >
-        Add
       </a-button>
+      <br />
+      <a-modal
+        v-model="visible"
+        title="Create Author"
+        @ok="handleOk"
+        okText="Create"
+      >
+        <CreateAuthorForm></CreateAuthorForm>
+      </a-modal>
     </div>
+    <br />
 
-    <a-table
-      :columns="columns"
-      :data-source="data"
-      :pagination="{ pageSize: 50 }"
-      :scroll="{ y: 440 }"
-      style="margin-top: 10px"
-    />
+    <a-table :columns="columns" :data-source="data" bordered>
+      <template
+        v-for="col in ['name', 'eng_name']"
+        :slot="col"
+        slot-scope="text, record"
+      >
+        <div :key="col">
+          <a-input
+            v-if="record.editable"
+            style="margin: -5px 0"
+            :value="text"
+            @change="e => handleChange(e.target.value, record.key, col)"
+          />
+          <template v-else>
+            {{ text }}
+          </template>
+        </div>
+      </template>
+      <template slot="operation" slot-scope="text, record">
+        <div class="editable-row-operations">
+          <span v-if="record.editable">
+            <a @click="() => save(record.key)">Save</a>
+            <a-popconfirm
+              title="Sure to cancel?"
+              @confirm="() => cancel(record.key)"
+            >
+              <a>Cancel</a>
+            </a-popconfirm>
+          </span>
+          <span v-else>
+            <a :disabled="editingKey !== ''" @click="() => edit(record.key)"
+              >Edit</a
+            >
+          </span>
+        </div>
+      </template>
+    </a-table>
   </div>
 </template>
 <script>
+import CreateAuthorForm from "@/components/author/CreateAuthorForm.vue";
 const columns = [
   {
-    title: "Name",
+    title: "Myanmar Name",
     dataIndex: "name",
-    width: 150
+    width: "40%",
+    scopedSlots: { customRender: "name" }
   },
   {
-    title: "English Name",
+    title: "Eng Name",
     dataIndex: "eng_name",
-    width: 150
+    width: "30%",
+    scopedSlots: { customRender: "eng_name" }
   },
   {
-    title: "Address",
-    dataIndex: "address"
+    title: "Action",
+    dataIndex: "operation",
+    width: "30%",
+    scopedSlots: { customRender: "operation" }
   }
 ];
 
 const data = [];
 for (let i = 0; i < 100; i++) {
   data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    eng_name: 32,
-    address: `London, Park Lane no. ${i}`
+    key: i.toString(),
+    name: `တာယာမင်းဝေ ${i}`,
+    eng_name: "Tayaminwai"
   });
 }
-
 export default {
+  components: {
+    CreateAuthorForm
+  },
   data() {
+    this.cacheData = data.map(item => ({ ...item }));
     return {
       data,
-      columns
+      columns,
+      visible: false,
+      editingKey: ""
     };
   },
   methods: {
-    handleAdd() {
-      console.log("Added");
+    handleChange(value, key, column) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      if (target) {
+        target[column] = value;
+        this.data = newData;
+      }
     },
-    onClick() {
-      console.log("Clicked Me");
+    edit(key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      this.editingKey = key;
+      if (target) {
+        target.editable = true;
+        this.data = newData;
+      }
     },
-    onSubmit() {
-      console.log("onSubmit Worked");
+    save(key) {
+      const newData = [...this.data];
+      const newCacheData = [...this.cacheData];
+      const target = newData.filter(item => key === item.key)[0];
+      const targetCache = newCacheData.filter(item => key === item.key)[0];
+      if (target && targetCache) {
+        delete target.editable;
+        this.data = newData;
+        Object.assign(targetCache, target);
+        this.cacheData = newCacheData;
+      }
+      this.editingKey = "";
+    },
+    cancel(key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      this.editingKey = "";
+      if (target) {
+        Object.assign(
+          target,
+          this.cacheData.filter(item => key === item.key)[0]
+        );
+        delete target.editable;
+        this.data = newData;
+      }
+    },
+    showModal() {
+      this.visible = true;
+    },
+    handleOk(e) {
+      console.log(e);
+      this.visible = false;
     }
   }
 };
 </script>
 
-<style></style>
+<style>
+.editable-row-operations a {
+  margin-right: 8px;
+}
+</style>

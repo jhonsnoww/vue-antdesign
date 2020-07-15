@@ -2,8 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from "../views/Login.vue";
 import Authors from "../components/author/Authors.vue";
-import AuthorCreate from "../components/author/Create.vue";
-
 import Home from "../components/Home.vue";
 import Books from "../components/Books.vue";
 import Genres from "../components/Genres.vue";
@@ -43,14 +41,7 @@ const routes = [
       {
         path: "/authors",
         name: "Authors",
-        component: Authors,
-        children: [
-          {
-            path: "/create",
-            name: "Author-Create",
-            component: AuthorCreate
-          }
-        ]
+        component: Authors
       },
       {
         path: "/genres",

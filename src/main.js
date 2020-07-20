@@ -15,21 +15,21 @@ new Vue({
   render: h => h(App)
 }).$mount("#app");
 
-router.beforeEach(function(to, from, next) {
-  console.log("beforeEach", to.path + " - Auth: " + store.state.authenticated);
+// router.beforeEach(function(to, from, next) {
+//   console.log("beforeEach", to.path + " - Auth: " + store.state.authenticated);
 
-  if (
-    to.path !== "/login" &&
-    to.path !== "login" &&
-    !store.state.authenticated
-  ) {
-    next({ path: "/login" });
-  } else if (
-    (to.path === "/login" || to.path === "login") &&
-    store.state.authenticated
-  ) {
-    next({ path: "/" });
-  } else {
-    next();
-  }
-});
+//   if (
+//     to.path !== "/login" &&
+//     to.path !== "login" &&
+//     !store.state.authenticated
+//   ) {
+//     next({ path: "/login" });
+//   } else if (
+//     (to.path === "/login" || to.path === "login") &&
+//     store.state.authenticated
+//   ) {
+//     next({ path: "/" });
+//   } else {
+//     next();
+//   }
+// });

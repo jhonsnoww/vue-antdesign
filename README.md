@@ -1,4 +1,4 @@
-# ant_vue
+# Panora Admin
 
 ## Project setup
 ```

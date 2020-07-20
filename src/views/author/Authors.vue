@@ -6,9 +6,9 @@
         type="primary"
         htmlType="submit"
         @click="showModal"
-        icon="user-add"
         shape="circle"
       >
+        <a-icon type="plus" />
       </a-button>
       <br />
       <a-modal
@@ -22,7 +22,7 @@
     </div>
     <br />
 
-    <a-table :columns="columns" :data-source="data" bordered>
+    <a-table :columns="columns" :data-source="authors" bordered>
       <template
         v-for="col in ['name', 'eng_name']"
         :slot="col"
@@ -62,7 +62,8 @@
   </div>
 </template>
 <script>
-import CreateAuthorForm from "@/components/author/CreateAuthorForm.vue";
+import CreateAuthorForm from "@/components/CreateAuthorForm.vue";
+import store from "../../store";
 const columns = [
   {
     title: "Myanmar Name",
@@ -84,56 +85,53 @@ const columns = [
   }
 ];
 
-const data = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i.toString(),
-    name: `တာယာမင်းဝေ ${i}`,
-    eng_name: "Tayaminwai"
-  });
-}
 export default {
   components: {
     CreateAuthorForm
   },
   data() {
-    this.cacheData = data.map(item => ({ ...item }));
     return {
-      data,
+      authors: [],
       columns,
       visible: false,
       editingKey: ""
     };
   },
+  created() {
+    this.authors = store.getters.authors;
+    this.cacheData = this.authors.map(item => ({ ...item }));
+  },
   methods: {
     handleChange(value, key, column) {
-      const newData = [...this.data];
+      const newData = [...this.authors];
       const target = newData.filter(item => key === item.key)[0];
       if (target) {
         target[column] = value;
-        this.data = newData;
+        this.authors = newData;
       }
     },
     edit(key) {
-      const newData = [...this.data];
+      const newData = [...this.authors];
       const target = newData.filter(item => key === item.key)[0];
       this.editingKey = key;
       if (target) {
         target.editable = true;
-        this.data = newData;
+        this.authors = newData;
       }
     },
     save(key) {
-      const newData = [...this.data];
+      const newData = [...this.authors];
       const newCacheData = [...this.cacheData];
       const target = newData.filter(item => key === item.key)[0];
       const targetCache = newCacheData.filter(item => key === item.key)[0];
       if (target && targetCache) {
         delete target.editable;
-        this.data = newData;
+        this.authors = newData;
         Object.assign(targetCache, target);
         this.cacheData = newCacheData;
       }
+
+      console.log(target.key); // index
       this.editingKey = "";
     },
     cancel(key) {

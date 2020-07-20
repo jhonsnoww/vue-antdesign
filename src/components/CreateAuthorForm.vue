@@ -1,5 +1,11 @@
 <template>
-  <a-form layout="inline" :form="form" @submit="handleSubmit">
+  <a-form-model
+    ref="ruleForm"
+    :model="form"
+    :rules="rules"
+    layout="inline"
+    @submit="handleSubmit"
+  >
     <a-form-item
       :validate-status="userNameError() ? 'error' : ''"
       :help="userNameError() || ''"
@@ -37,7 +43,7 @@
       >
       </a-input>
     </a-form-item>
-  </a-form>
+  </a-form-model>
 </template>
 
 <script>
@@ -48,7 +54,25 @@ export default {
   data() {
     return {
       hasErrors,
-      form: this.$form.createForm(this, { name: "horizontal_login" })
+
+      form: this.$form.createForm(this, { name: "horizontal_login" }),
+      rules: {
+        name: [
+          {
+            required: true,
+            message: "Please input myanmar name",
+            trigger: "blur"
+          }
+          // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
+        ],
+        engName: [
+          {
+            required: true,
+            message: "Please select Activity zone",
+            trigger: "change"
+          }
+        ]
+      }
     };
   },
   mounted() {

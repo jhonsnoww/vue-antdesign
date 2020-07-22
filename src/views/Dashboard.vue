@@ -44,8 +44,8 @@
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
         <div style="float:right;text-align:center;margin-right:30px;">
-          <a-button type="danger" shape="circle">
-            <a-icon type="logout" />
+          <a-button type="danger">
+            <a-icon type="poweroff" />
           </a-button>
         </div>
       </a-layout-header>

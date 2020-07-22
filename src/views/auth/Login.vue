@@ -58,8 +58,8 @@ export default {
   data() {
     return {
       form: {
-        name: "",
-        password: ""
+        name: "Hello ",
+        password: "12345ff"
       },
       rules: {
         name: [
@@ -95,8 +95,8 @@ export default {
     handleSubmit() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
-          console.log(valid.validateStatus("success"));
-          alert("submit!");
+          this.$store.commit("setAuthentication", true);
+          this.$router.replace({ name: "Home" });
         } else {
           console.log("error submit!!");
           return false;
@@ -106,9 +106,6 @@ export default {
     resetForm() {
       this.$refs.ruleForm.resetFields();
     }
-
-    // this.$store.commit("setAuthentication", true);
-    // this.$router.replace({ name: "Home" });
   },
   ...mapActions("auth", ["sayMyWord", "setAuth"])
 };

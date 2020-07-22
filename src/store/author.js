@@ -1,5 +1,9 @@
 export default {
   state: {
+    form: {
+      name: "",
+      engName: ""
+    },
     authors: [
       { name: "မင်းထင်ကိုကိုကြီး", engName: "Min Htin Ko Ko Gyi" },
       { name: "မင်းကိုနိုင်", engName: "Min Ko Naing" },
@@ -9,6 +13,13 @@ export default {
   },
   mutations: {},
   getters: {
+    hello() {
+      console.log("hello im from state");
+    },
+    form(state) {
+      console.log(state.form.name | state.form.engName);
+      return state.form;
+    },
     authors(state) {
       const temAuthors = [];
       for (let index = 0; index < state.authors.length; index++) {

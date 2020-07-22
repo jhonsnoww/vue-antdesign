@@ -5,57 +5,41 @@
     :rules="rules"
     layout="inline"
     @submit="handleSubmit"
+    @submit.native.prevent
   >
-    <a-form-item
-      :validate-status="userNameError() ? 'error' : ''"
-      :help="userNameError() || ''"
-    >
+    <a-form-model-item ref="name" prop="name">
       <a-input
-        v-decorator="[
-          'myanmar',
-          {
-            rules: [
-              {
-                required: true,
-                message: 'Please input myanmar name!'
-              }
-            ]
-          }
-        ]"
+        v-model="form.name"
         placeholder="Myanmar Name"
-      >
-      </a-input>
-    </a-form-item>
-    <a-form-item
-      :validate-status="passwordError() ? 'error' : ''"
-      :help="passwordError() || ''"
-    >
-      <a-input
-        v-decorator="[
-          'eng',
-          {
-            rules: [
-              { required: true, message: 'Please input Author Eng Name!' }
-            ]
+        @blur="
+          () => {
+            $refs.name.onFieldBlur();
           }
-        ]"
-        placeholder="English Name"
+        "
       >
       </a-input>
-    </a-form-item>
+    </a-form-model-item>
+    <a-form-model-item ref="engName" prop="engName">
+      <a-input
+        v-model="form.engName"
+        placeholder="English Name"
+        @blur="
+          () => {
+            $refs.engName.onFieldBlur();
+          }
+        "
+      >
+      </a-input>
+    </a-form-model-item>
   </a-form-model>
 </template>
 
 <script>
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      hasErrors,
-
-      form: this.$form.createForm(this, { name: "horizontal_login" }),
       rules: {
         name: [
           {
@@ -68,37 +52,21 @@ export default {
         engName: [
           {
             required: true,
-            message: "Please select Activity zone",
-            trigger: "change"
+            message: "Please select EngName",
+            trigger: "blur"
           }
         ]
       }
     };
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.form.validateFields();
-    });
+  computed: {
+    ...mapGetters(["form"])
+  },
+  created() {
+    console.log("haha");
   },
   methods: {
-    // Only show error after a field is touched.
-    userNameError() {
-      const { getFieldError, isFieldTouched } = this.form;
-      return isFieldTouched("myanmar") && getFieldError("myanmar");
-    },
-    // Only show error after a field is touched.
-    passwordError() {
-      const { getFieldError, isFieldTouched } = this.form;
-      return isFieldTouched("eng") && getFieldError("eng");
-    },
-    handleSubmit(e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log("Received values of form: ", values);
-        }
-      });
-    }
+    handleSubmit() {}
   }
 };
 </script>

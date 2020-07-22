@@ -63,7 +63,8 @@
 </template>
 <script>
 import CreateAuthorForm from "@/components/CreateAuthorForm.vue";
-import store from "../../store";
+import { mapGetters } from "vuex";
+
 const columns = [
   {
     title: "Myanmar Name",
@@ -86,6 +87,7 @@ const columns = [
 ];
 
 export default {
+  props: {},
   components: {
     CreateAuthorForm
   },
@@ -98,7 +100,7 @@ export default {
     };
   },
   created() {
-    this.authors = store.getters.authors;
+    this.authors = this.$store.getters.authors;
     this.cacheData = this.authors.map(item => ({ ...item }));
   },
   methods: {
@@ -148,12 +150,19 @@ export default {
       }
     },
     showModal() {
+      console.log("ShowModal");
       this.visible = true;
     },
-    handleOk(e) {
-      console.log(e);
+    handleOk() {
+      this.$store.getters.authors.push({
+        key: this.$store.getters.authors.length.toString(),
+        name: this.$store.getters.form.name,
+        eng_name: this.$store.getters.form.engName
+      });
       this.visible = false;
-    }
+      this.hello;
+    },
+    ...mapGetters("author", ["hello"])
   }
 };
 </script>
